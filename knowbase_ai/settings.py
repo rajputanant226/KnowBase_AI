@@ -72,6 +72,19 @@ TEMPLATES = [
     },
 ]
 
+ALLOWED_HOSTS = [
+    "knowbase-ai.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://knowbase-ai.onrender.com",
+]
+
+# settings.py
+MIDDLEWARE.remove('django.middleware.csrf.CsrfViewMiddleware')
+
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
 WSGI_APPLICATION = 'knowbase_ai.wsgi.application'

@@ -4,11 +4,13 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Document
+from django.views.decorators.csrf import csrf_exempt
 from .ai.document_loader import load_and_split
 from .ai.embeddings import get_embeddings
 from core.ai.vector_store import save_vectors
 from .ai.rag_pipeline import ask
 
+@csrf_exempt
 def upload_document(request):
     if request.method == 'POST':
         file = request.FILES['file']
