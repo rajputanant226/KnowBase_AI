@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^po98ww+o#s8+m^84e#%otx*7&bc7$r4juf=@g*c)-*s3czs33'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "knowbase-ai.onrender.com",
