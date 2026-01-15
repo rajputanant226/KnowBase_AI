@@ -17,7 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 
 COPY . .
+# 👇 YAHAN LIKHNA HAI (COPY ke baad)
+RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["gunicorn", "knowbase_ai.wsgi:application", "--bind", "0.0.0.0:8000"]
+# 👇 LAST LINE
+CMD gunicorn knowbase_ai.wsgi:application --bind 0.0.0.0:$PORT
