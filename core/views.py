@@ -16,23 +16,32 @@ import tempfile
 
 @csrf_exempt
 def upload_document(request):
-    if request.method == "POST":
-        if "file" not in request.FILES:
-            return HttpResponse("No file uploaded", status=400)
+    if request.method == 'POST':
+        try:
+            file = request.FILES.get('file')
+            if not file:
+                return HttpResponse("No file uploaded", status=400)
 
-        file = request.FILES["file"]
-        doc = Document.objects.create(file=file)
+            doc = Document.objects.create(file=file)
 
-        file_path = doc.file.path
+            if not os.path.exists(doc.file.path):
+                return HttpResponse("File not saved correctly", status=500)
 
-        docs = load_and_split(file_path)
-        embeddings = get_embeddings()
-        save_vectors(docs, embeddings)
+            docs = load_and_split(doc.file.path)
 
-        return render(request, "chat.html")
+            if not docs:
+                return HttpResponse("PDF is empty or unreadable", status=400)
 
-    return render(request, "upload.html")
+            embeddings = get_embeddings()
+            save_vectors(docs, embeddings)
 
+            return render(request, 'chat.html')
+
+        except Exception as e:
+            print("UPLOAD ERROR:", str(e))
+            return HttpResponse("Internal error while processing document", status=500)
+
+    return render(request, 'upload.html')
 
 def chat_page(request):
     return render(request, 'chat.html')
