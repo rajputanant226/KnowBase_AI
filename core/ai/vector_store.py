@@ -49,12 +49,9 @@ from qdrant_client.models import VectorParams, Distance
 from langchain_community.vectorstores import Qdrant
 
 COLLECTION_NAME = "knowbase_docs"
-VECTOR_SIZE = 1536  # OpenAI embedding size
+VECTOR_SIZE = 1536  # OpenAI embeddings
 
 def get_qdrant_client():
-    print("QDRANT_URL =", os.getenv("QDRANT_URL"))
-    print("QDRANT_API_KEY =", "SET" if os.getenv("QDRANT_API_KEY") else "NOT SET")
-
     return QdrantClient(
         url=os.getenv("QDRANT_URL"),
         api_key=os.getenv("QDRANT_API_KEY"),
@@ -63,9 +60,8 @@ def get_qdrant_client():
 def save_vectors(docs, embeddings):
     client = get_qdrant_client()
 
-    collections = [c.name for c in client.get_collections().collections]
-
-    if COLLECTION_NAME not in collections:
+    # ✅ safe create (idempotent)
+    try:
         client.create_collection(
             collection_name=COLLECTION_NAME,
             vectors_config=VectorParams(
@@ -73,15 +69,18 @@ def save_vectors(docs, embeddings):
                 distance=Distance.COSINE,
             ),
         )
+    except Exception:
+        # collection already exists → ignore
+        pass
 
-    qdrant = Qdrant(
-        client=client,
+    # ✅ recommended LangChain method
+    Qdrant.from_documents(
+        docs,
+        embeddings,
+        url=os.getenv("QDRANT_URL"),
+        api_key=os.getenv("QDRANT_API_KEY"),
         collection_name=COLLECTION_NAME,
-        embeddings=embeddings,
     )
-
-    qdrant.add_documents(docs)
-
 
 # COLLECTION_NAME = "knowbase_docs"
 # VECTOR_SIZE = 1536  # OpenAI embedding size

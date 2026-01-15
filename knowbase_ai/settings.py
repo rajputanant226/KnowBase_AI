@@ -29,8 +29,11 @@ SECRET_KEY = 'django-insecure-^po98ww+o#s8+m^84e#%otx*7&bc7$r4juf=@g*c)-*s3czs33
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
-
+ALLOWED_HOSTS = [
+    "knowbase-ai.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -46,10 +49,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -72,19 +75,14 @@ TEMPLATES = [
     },
 ]
 
-ALLOWED_HOSTS = [
-    "knowbase-ai.onrender.com",
-    "localhost",
-    "127.0.0.1",
-]
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://knowbase-ai.onrender.com",
 ]
 
 # settings.py
-MIDDLEWARE.remove('django.middleware.csrf.CsrfViewMiddleware')
-
+ 
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
 WSGI_APPLICATION = 'knowbase_ai.wsgi.application'
