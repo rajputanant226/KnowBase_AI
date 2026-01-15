@@ -50,19 +50,25 @@
 
 
 
-
+import os
 from langchain_community.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains import RetrievalQA
 
 COLLECTION_NAME = "knowbase_docs"
-QDRANT_URL = "http://localhost:6333"
 
 def ask(question):
+    # ✅ embeddings
     embeddings = OpenAIEmbeddings()
-    client = QdrantClient(url=QDRANT_URL)
 
+    # ✅ Qdrant Cloud client (NOT localhost)
+    client = QdrantClient(
+        url=os.getenv("QDRANT_URL"),
+        api_key=os.getenv("QDRANT_API_KEY"),
+    )
+
+    # ✅ connect to existing cloud collection
     db = Qdrant(
         client=client,
         collection_name=COLLECTION_NAME,
@@ -75,8 +81,7 @@ def ask(question):
     qa = RetrievalQA.from_chain_type(
         llm=llm,
         retriever=retriever,
-        return_source_documents=True,
+        chain_type="stuff",
     )
 
     return qa.invoke({"query": question})
-
