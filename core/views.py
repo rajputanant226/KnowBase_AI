@@ -17,32 +17,19 @@ import tempfile
 @csrf_exempt
 def upload_document(request):
     if request.method == "POST":
-        uploaded_file = request.FILES.get("file")
+        if "file" not in request.FILES:
+            return HttpResponse("No file uploaded", status=400)
 
-        if not uploaded_file:
-            return render(request, "upload.html", {"error": "No file uploaded"})
+        file = request.FILES["file"]
+        doc = Document.objects.create(file=file)
 
-        if not uploaded_file.name.endswith(".pdf"):
-            return render(request, "upload.html", {"error": "Only PDF allowed"})
+        file_path = doc.file.path
 
-        # ✅ save to /tmp (Render-safe)
-        temp_path = f"/tmp/{uuid.uuid4()}.pdf"
-        with open(temp_path, "wb+") as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
-
-        # ✅ load + split
-        docs = load_and_split(temp_path)
-
+        docs = load_and_split(file_path)
         embeddings = get_embeddings()
         save_vectors(docs, embeddings)
 
-        # optional cleanup
-        os.remove(temp_path)
-
-        return render(request, "chat.html", {
-            "message": "Document indexed successfully"
-        })
+        return render(request, "chat.html")
 
     return render(request, "upload.html")
 
