@@ -35,16 +35,18 @@
 </head>
 
 <body class="center-page">
-
+  <div class="top-bar">
+    <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+  </div>
   <div class="card">
     <h1>KnowBase AI</h1>
     <p class="subtitle">Enterprise Knowledge Assistant</p>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" onsubmit="showPopup()">
       {% csrf_token %}
 
       <label class="upload-box">
-        <input type="file" name="file" accept=".pdf" required hidden>
+        <input type="file" id="pdfInput" name="file" accept=".pdf" required hidden>
         <div class="upload-icon">⬆</div>
         <p><strong>Drag & Drop your PDF here</strong></p>
         <span>or click to browse</span>
@@ -56,8 +58,9 @@
     </form>
   </div>
 
-  <button class="dark-toggle" onclick="toggleDark()">🌙</button>
   <script src="{% static 'js/theme.js' %}"></script>
+
+
 
 </body>
 </html>

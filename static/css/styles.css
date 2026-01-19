@@ -24,6 +24,33 @@ body.dark {
 /* =========================
    BASE
 ========================= */
+.upload-toast {
+  position: fixed;
+  top: 30px;              
+  right: 25px;
+  background: #1f2937;
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(-20px);  /* slide from top */
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+.upload-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Dark mode compatibility */
+body.dark .upload-toast {
+  background: #e5e7eb;
+  color: #111827;
+}
+
 
 * {
   margin: 0;
@@ -126,15 +153,17 @@ body {
    DARK MODE TOGGLE
 ========================= */
 
-.dark-toggle {
-  position: fixed;
-  bottom: 20px;
+.top-bar {
+  position: absolute;
+  top: 20px;
   right: 20px;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  cursor: pointer;
-  font-size: 18px;
+  z-index: 1000;
 }
+
+.dark-toggle {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+

@@ -4,7 +4,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Document
-
+from django.contrib import messages
 from django.http import JsonResponse
 from .models import Document
 from django.views.decorators.csrf import csrf_exempt
@@ -37,7 +37,11 @@ def upload_document(request):
 
             embeddings = get_embeddings()
             save_vectors(docs, embeddings)
-
+            
+            messages.success(
+                request,
+                f'File "{file.name}" submitted successfully!'
+            )
             return render(request, 'chat.html')
 
         except Exception as e:
